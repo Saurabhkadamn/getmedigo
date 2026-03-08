@@ -44,6 +44,13 @@ class RouteContractTests(unittest.TestCase):
         self.assertIn(("GET", "/ready"), routes)
         self.assertIn(("GET", "/content/home"), routes)
 
+    def test_gateway_readiness_checks_downstream_services(self):
+        source = Path("services/api-gateway/app/main.py").read_text()
+        self.assertIn('"auth-service": f"{AUTH_SERVICE_URL}/ready"', source)
+        self.assertIn('"user-service": f"{USER_SERVICE_URL}/ready"', source)
+        self.assertIn('"content-service": f"{CONTENT_SERVICE_URL}/ready"', source)
+        self.assertIn("status_code=503", source)
+
 
 if __name__ == "__main__":
     unittest.main()

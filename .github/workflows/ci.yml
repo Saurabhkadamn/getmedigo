@@ -24,5 +24,5 @@ jobs:
             services/user-service/app/main.py \
             services/content-service/app/main.py
 
-      - name: Route contract tests
-        run: python -m unittest tests/test_route_contracts.py
+      - name: Unit tests
+        run: python -m unittest discover -s tests -p 'test_*.py'

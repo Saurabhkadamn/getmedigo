@@ -4,8 +4,8 @@ This repository includes a production-oriented microservice starter architecture
 
 ## Services
 - **api-gateway**: public entrypoint and service routing.
-- **auth-service**: authentication endpoints (stubbed for now).
-- **user-service**: profile endpoints (stubbed for now).
+- **auth-service**: authentication endpoints (**currently stubbed**).
+- **user-service**: profile endpoints.
 - **content-service**: website content endpoints.
 
 ## Infra (local)
@@ -29,16 +29,18 @@ curl http://localhost:8000/api/v1/users/user-123
 curl http://localhost:8000/api/v1/content/home
 ```
 
-## Test route contracts
+## Tests
 ```bash
-python -m unittest tests/test_route_contracts.py
+python -m unittest discover -s tests -p 'test_*.py'
 ```
 
 ## CI
 GitHub Actions workflow: `.github/workflows/ci.yml`
 
-## Architecture doc
-See `docs/architecture/microservices.md` for scale, security, reliability, and next-step details.
+## Architecture docs
+- `docs/architecture/microservices.md`
+- `docs/roadmap/next-steps.md`
+- `docs/roadmap/release-readiness.md`
 
-## Delivery roadmap
-See `docs/roadmap/next-steps.md` for the next implementation milestones.
+## Is this production-ready right now?
+Not yet. It is a strong scaffold, but see `docs/roadmap/release-readiness.md` for launch blockers and minimum go-live gates.

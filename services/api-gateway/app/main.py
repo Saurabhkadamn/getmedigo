@@ -16,11 +16,6 @@ def health() -> dict[str, str]:
     return {"status": "ok", "service": "api-gateway"}
 
 
-@app.get("/ready")
-def ready() -> dict[str, str]:
-    return {"status": "ready", "service": "api-gateway"}
-
-
 async def proxy_post(url: str, payload: dict[str, Any], request_id: str | None = None) -> Any:
     headers = {"x-request-id": request_id} if request_id else {}
     async with httpx.AsyncClient(timeout=5.0) as client:
@@ -37,6 +32,36 @@ async def proxy_get(url: str, request_id: str | None = None) -> Any:
         if response.status_code >= 400:
             raise HTTPException(status_code=response.status_code, detail=response.text)
         return response.json()
+
+
+@app.get("/ready")
+async def ready() -> dict[str, Any]:
+    checks = {
+        "auth-service": f"{AUTH_SERVICE_URL}/ready",
+        "user-service": f"{USER_SERVICE_URL}/ready",
+        "content-service": f"{CONTENT_SERVICE_URL}/ready",
+    }
+
+    results: dict[str, str] = {}
+    all_ready = True
+
+    async with httpx.AsyncClient(timeout=2.0) as client:
+        for service_name, url in checks.items():
+            try:
+                response = await client.get(url)
+                if response.status_code == 200:
+                    results[service_name] = "ready"
+                else:
+                    results[service_name] = f"not_ready_http_{response.status_code}"
+                    all_ready = False
+            except httpx.HTTPError:
+                results[service_name] = "unreachable"
+                all_ready = False
+
+    if not all_ready:
+        raise HTTPException(status_code=503, detail={"status": "not_ready", "checks": results})
+
+    return {"status": "ready", "service": "api-gateway", "checks": results}
 
 
 @app.post("/api/v1/auth/login")
