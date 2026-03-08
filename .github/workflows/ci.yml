@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: ["work", "main", "master"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Syntax checks
+        run: |
+          python -m py_compile services/api-gateway/app/main.py \
+            services/auth-service/app/main.py \
+            services/user-service/app/main.py \
+            services/content-service/app/main.py
+
+      - name: Route contract tests
+        run: python -m unittest tests/test_route_contracts.py
