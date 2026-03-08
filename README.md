@@ -44,3 +44,6 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 
 ## Is this production-ready right now?
 Not yet. It is a strong scaffold, but see `docs/roadmap/release-readiness.md` for launch blockers and minimum go-live gates.
+
+## Merge conflict status
+The previously reported conflict files are normalized and covered by a guard test (`test_no_conflict_markers_in_key_files`).

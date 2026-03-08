@@ -10,6 +10,12 @@ AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://auth-service:8001")
 USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://user-service:8002")
 CONTENT_SERVICE_URL = os.getenv("CONTENT_SERVICE_URL", "http://content-service:8003")
 
+READINESS_TARGETS = {
+    "auth-service": f"{AUTH_SERVICE_URL}/ready",
+    "user-service": f"{USER_SERVICE_URL}/ready",
+    "content-service": f"{CONTENT_SERVICE_URL}/ready",
+}
+
 
 @app.get("/health")
 def health() -> dict[str, str]:
@@ -36,17 +42,11 @@ async def proxy_get(url: str, request_id: str | None = None) -> Any:
 
 @app.get("/ready")
 async def ready() -> dict[str, Any]:
-    checks = {
-        "auth-service": f"{AUTH_SERVICE_URL}/ready",
-        "user-service": f"{USER_SERVICE_URL}/ready",
-        "content-service": f"{CONTENT_SERVICE_URL}/ready",
-    }
-
     results: dict[str, str] = {}
     all_ready = True
 
     async with httpx.AsyncClient(timeout=2.0) as client:
-        for service_name, url in checks.items():
+        for service_name, url in READINESS_TARGETS.items():
             try:
                 response = await client.get(url)
                 if response.status_code == 200:

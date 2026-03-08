@@ -21,7 +21,7 @@ def ready() -> dict[str, str]:
 
 @app.post("/auth/login")
 def login(payload: LoginRequest) -> dict[str, str]:
-    # Stub response for initial architecture bootstrap.
+    # Stub response for scaffold only. Replace with secure auth implementation.
     return {
         "access_token": f"stub-token-for-{payload.email}",
         "token_type": "bearer",

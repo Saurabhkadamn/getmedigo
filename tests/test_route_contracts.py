@@ -46,10 +46,25 @@ class RouteContractTests(unittest.TestCase):
 
     def test_gateway_readiness_checks_downstream_services(self):
         source = Path("services/api-gateway/app/main.py").read_text()
+        self.assertIn("READINESS_TARGETS", source)
         self.assertIn('"auth-service": f"{AUTH_SERVICE_URL}/ready"', source)
         self.assertIn('"user-service": f"{USER_SERVICE_URL}/ready"', source)
         self.assertIn('"content-service": f"{CONTENT_SERVICE_URL}/ready"', source)
         self.assertIn("status_code=503", source)
+
+    def test_no_conflict_markers_in_key_files(self):
+        tracked = [
+            "README.md",
+            "services/api-gateway/app/main.py",
+            "services/auth-service/app/main.py",
+            "services/content-service/app/main.py",
+            "services/user-service/app/main.py",
+        ]
+        for file_path in tracked:
+            content = Path(file_path).read_text()
+            self.assertNotIn("<<<<<<<", content, file_path)
+            self.assertNotIn(">>>>>>>", content, file_path)
+            self.assertNotIn("=======", content, file_path)
 
 
 if __name__ == "__main__":

@@ -22,5 +22,5 @@ def ready() -> dict[str, str]:
 
 @app.get("/users/{user_id}", response_model=UserProfile)
 def get_user(user_id: str) -> UserProfile:
-    # Stub profile for architecture bootstrap.
+    # Stub profile for scaffold only.
     return UserProfile(user_id=user_id, full_name="Demo User")
