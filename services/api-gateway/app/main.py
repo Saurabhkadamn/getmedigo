@@ -34,6 +34,30 @@ async def proxy_get(url: str, request_id: str | None = None) -> Any:
         return response.json()
 
 
+@app.get("/ready")
+async def ready() -> dict[str, Any]:
+    results: dict[str, str] = {}
+    all_ready = True
+
+    async with httpx.AsyncClient(timeout=2.0) as client:
+        for service_name, url in READINESS_TARGETS.items():
+            try:
+                response = await client.get(url)
+                if response.status_code == 200:
+                    results[service_name] = "ready"
+                else:
+                    results[service_name] = f"not_ready_http_{response.status_code}"
+                    all_ready = False
+            except httpx.HTTPError:
+                results[service_name] = "unreachable"
+                all_ready = False
+
+    if not all_ready:
+        raise HTTPException(status_code=503, detail={"status": "not_ready", "checks": results})
+
+    return {"status": "ready", "service": "api-gateway", "checks": results}
+
+
 @app.post("/api/v1/auth/login")
 async def login(request: Request) -> Any:
     payload = await request.json()

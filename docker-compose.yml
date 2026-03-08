@@ -50,6 +50,6 @@ services:
     container_name: getmedigo-redis
     ports:
       - "6379:6379"
-
+.
 volumes:
   postgres_data:
