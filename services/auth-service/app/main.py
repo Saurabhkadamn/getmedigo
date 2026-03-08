@@ -14,14 +14,9 @@ def health() -> dict[str, str]:
     return {"status": "ok", "service": "auth-service"}
 
 
-@app.get("/ready")
-def ready() -> dict[str, str]:
-    return {"status": "ready", "service": "auth-service"}
-
-
 @app.post("/auth/login")
 def login(payload: LoginRequest) -> dict[str, str]:
-    # Stub response for scaffold only. Replace with secure auth implementation.
+    # Stub response for initial architecture bootstrap.
     return {
         "access_token": f"stub-token-for-{payload.email}",
         "token_type": "bearer",

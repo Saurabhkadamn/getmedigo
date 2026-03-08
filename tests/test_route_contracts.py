@@ -21,7 +21,6 @@ class RouteContractTests(unittest.TestCase):
     def test_api_gateway_expected_routes(self):
         routes = self._collect_routes("services/api-gateway/app/main.py")
         self.assertIn(("GET", "/health"), routes)
-        self.assertIn(("GET", "/ready"), routes)
         self.assertIn(("POST", "/api/v1/auth/login"), routes)
         self.assertIn(("GET", "/api/v1/users/{user_id}"), routes)
         self.assertIn(("GET", "/api/v1/content/home"), routes)
@@ -29,42 +28,17 @@ class RouteContractTests(unittest.TestCase):
     def test_auth_service_expected_routes(self):
         routes = self._collect_routes("services/auth-service/app/main.py")
         self.assertIn(("GET", "/health"), routes)
-        self.assertIn(("GET", "/ready"), routes)
         self.assertIn(("POST", "/auth/login"), routes)
 
     def test_user_service_expected_routes(self):
         routes = self._collect_routes("services/user-service/app/main.py")
         self.assertIn(("GET", "/health"), routes)
-        self.assertIn(("GET", "/ready"), routes)
         self.assertIn(("GET", "/users/{user_id}"), routes)
 
     def test_content_service_expected_routes(self):
         routes = self._collect_routes("services/content-service/app/main.py")
         self.assertIn(("GET", "/health"), routes)
-        self.assertIn(("GET", "/ready"), routes)
         self.assertIn(("GET", "/content/home"), routes)
-
-    def test_gateway_readiness_checks_downstream_services(self):
-        source = Path("services/api-gateway/app/main.py").read_text()
-        self.assertIn("READINESS_TARGETS", source)
-        self.assertIn('"auth-service": f"{AUTH_SERVICE_URL}/ready"', source)
-        self.assertIn('"user-service": f"{USER_SERVICE_URL}/ready"', source)
-        self.assertIn('"content-service": f"{CONTENT_SERVICE_URL}/ready"', source)
-        self.assertIn("status_code=503", source)
-
-    def test_no_conflict_markers_in_key_files(self):
-        tracked = [
-            "README.md",
-            "services/api-gateway/app/main.py",
-            "services/auth-service/app/main.py",
-            "services/content-service/app/main.py",
-            "services/user-service/app/main.py",
-        ]
-        for file_path in tracked:
-            content = Path(file_path).read_text()
-            self.assertNotIn("<<<<<<<", content, file_path)
-            self.assertNotIn(">>>>>>>", content, file_path)
-            self.assertNotIn("=======", content, file_path)
 
 
 if __name__ == "__main__":

@@ -10,12 +10,6 @@ AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://auth-service:8001")
 USER_SERVICE_URL = os.getenv("USER_SERVICE_URL", "http://user-service:8002")
 CONTENT_SERVICE_URL = os.getenv("CONTENT_SERVICE_URL", "http://content-service:8003")
 
-READINESS_TARGETS = {
-    "auth-service": f"{AUTH_SERVICE_URL}/ready",
-    "user-service": f"{USER_SERVICE_URL}/ready",
-    "content-service": f"{CONTENT_SERVICE_URL}/ready",
-}
-
 
 @app.get("/health")
 def health() -> dict[str, str]:

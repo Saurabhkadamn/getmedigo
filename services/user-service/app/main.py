@@ -15,12 +15,7 @@ def health() -> dict[str, str]:
     return {"status": "ok", "service": "user-service"}
 
 
-@app.get("/ready")
-def ready() -> dict[str, str]:
-    return {"status": "ready", "service": "user-service"}
-
-
 @app.get("/users/{user_id}", response_model=UserProfile)
 def get_user(user_id: str) -> UserProfile:
-    # Stub profile for scaffold only.
+    # Stub profile for architecture bootstrap.
     return UserProfile(user_id=user_id, full_name="Demo User")

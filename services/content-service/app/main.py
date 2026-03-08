@@ -8,11 +8,6 @@ def health() -> dict[str, str]:
     return {"status": "ok", "service": "content-service"}
 
 
-@app.get("/ready")
-def ready() -> dict[str, str]:
-    return {"status": "ready", "service": "content-service"}
-
-
 @app.get("/content/home")
 def homepage_content() -> dict[str, object]:
     return {
